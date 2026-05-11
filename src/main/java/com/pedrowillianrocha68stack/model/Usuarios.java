@@ -14,7 +14,7 @@ public class Usuarios {
     private String email;
     private int cpf;
     private String telefone;
-    private String endereço;
+    private String endereco;
 
     public Usuarios(){
 
@@ -44,11 +44,11 @@ public class Usuarios {
     public void setCpf(int cpf){
         this.cpf = cpf;
     }
-    public string getTelefone(){
+    public String getTelefone(){
         return telefone;
     }
     public void setTelefone (String telefone){
-        this.telefone - telefone;
+        this.telefone = telefone;
     }
     public String getEndereco(){
         return endereco;
