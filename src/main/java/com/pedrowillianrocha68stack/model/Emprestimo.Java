@@ -29,7 +29,7 @@ public class Emprestimo{
     }
     
     public Long getIdEmprestimo(){
-        return iidEmprestimo;
+        return idEmprestimo;
     }
     public void setIdEmprestimo(Long idEmprestimo){
         this.idEmprestimo = idEmprestimo;
