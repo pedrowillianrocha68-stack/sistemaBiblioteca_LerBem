@@ -2,11 +2,11 @@ package com.pedrowillianrocha68stack.repository;
 
 import com.pedrowillianrocha68stack.model.Usuarios;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.Query;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import jva.util.Optional;
+import java.util.Optional;
 import java.util.List;
 
 @Repository
