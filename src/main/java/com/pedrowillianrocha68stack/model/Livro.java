@@ -15,6 +15,15 @@ public class Livro {
     private String isbn;
     private int anoPublicacao;
     private boolean disponivel;
+    private String categoria;
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 
     public Livro(){
 

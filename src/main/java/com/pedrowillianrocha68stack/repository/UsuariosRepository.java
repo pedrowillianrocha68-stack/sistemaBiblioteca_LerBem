@@ -19,10 +19,10 @@ public interface UsuariosRepository extends JpaRepository<Usuarios, Long>{
     boolean existsByNome(String nome);
     boolean existsByEmail(String email);
 
-    List<Usuarios> findByActiveTrue();
+   //List<Usuarios> findByActiveTrue();
 
-    List<Usuarios> findByNomeContainingIgnoreCase(String nome);
+    //List<Usuarios> findByNomeContainingIgnoreCase(String nome);
 
-    @Query("SELECT u FROM Usuarios u JOIN u.roles r WHERE r.name = :rolename")
-    List<Usuarios> findByRoleName(@Param("rolename") String rolename);
+    //@Query("SELECT u FROM Usuarios u JOIN u.roles r WHERE r.name = :rolename")
+    //List<Usuarios> findByRoleName(@Param("rolename") String rolename);
 }
