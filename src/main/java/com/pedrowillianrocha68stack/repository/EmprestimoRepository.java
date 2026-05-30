@@ -15,21 +15,15 @@ import java.util.Optional;
 @Repository
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
-    // Todos os empréstimos de um usuário
     List<Emprestimo> findByUsuario(Usuarios usuario); 
 
-    // Todos os empréstimos de um usuário pelo ID
     List<Emprestimo> findByUsuario_IdUsuario(Long idUsuario); 
 
-    // Todos os empréstimos de um livro
     List<Emprestimo> findByLivro(Livro livro);
 
-    // Empréstimos ativos (não devolvidos)
     List<Emprestimo> findByDevolvido(boolean devolvido);
 
-    // Empréstimos por data de devolução
     List<Emprestimo> findByDataDevolucao(LocalDate dataDevolucao);
 
-    // Empréstimos atrasados (não devolvidos e com data de devolução antes de hoje)
     List<Emprestimo> findByDevolvidoFalseAndDataDevolucaoBefore(LocalDate data);
 }

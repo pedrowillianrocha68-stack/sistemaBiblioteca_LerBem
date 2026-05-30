@@ -37,7 +37,7 @@ public class Emprestimo{
     public Livro getLivro(){
         return livro;
     }
-    public void setLIvro (Livro livro){
+    public void setLivro (Livro livro){
         this.livro = livro;
     }
     public Usuarios getUsuario(){
