@@ -2,6 +2,7 @@ package com.pedrowillianrocha68stack.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name="emprestimo")
@@ -12,16 +13,21 @@ public class Emprestimo{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEmprestimo;
 
+    @NotNull(message = "Livro obrigatorio")
     @ManyToOne
     @JoinColumn(name = "IdLivro")
     private Livro livro;
-
+    
+    @NotNull(message = "Usuário obrigatorio")
     @ManyToOne
     @JoinColumn(name = "idUsuario")
     private Usuarios usuario;
 
-  
+    @NotNull(message = "Data de empréstimo obrigatória")
     private LocalDate dataEmprestimo;
+
+    @NotNull(message= "Data de devolução obrigatória")
+    @Future(message = "Data de devolução deve ser futura")
     private LocalDate dataDevolucao;
     private boolean devolvido;
 
@@ -52,7 +58,7 @@ public class Emprestimo{
     public void setDataEmprestimo(LocalDate dataEmprestimo){
         this.dataEmprestimo = dataEmprestimo;
     }
-    public LocalDate gatDataDevolucao(){
+    public LocalDate getDataDevolucao(){
         return dataDevolucao;
     }
     public void setDataDevolucao(LocalDate dataDevolucao){

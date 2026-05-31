@@ -1,5 +1,6 @@
 package com.pedrowillianrocha68stack.model;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name="livros")
@@ -10,11 +11,28 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idLivro;
 
+    @NotBlank(message  = "Título obrigatório")
+    @Size(max = 150, message = "Título deve tter no maximo 150 caracteres")
+    @Column(nullable = false, length = 150)
     private String titulo;
+
+    @NotBlank(message = "Autor obrigatorio")
+    @Size(max = 100, message = "Autor deve tter no maximo 100 caracteres")
+    @Column(nullable = false, length = 100)
     private String autor;
+
+    @NotBlank(message = "ISBN obrigatorio")
+    @Column(nullable = false, unique = true)
     private String isbn;
+
+    @Min(value = 1000, message = "Ano de publicação invalido")
+    @Max(value = 2100, message = "Ano de publicação invalido")
     private int anoPublicacao;
+
     private boolean disponivel;
+
+    @NotBlank(message = "Categoria obrigatoria")
+    @Column(nullable = false)
     private String categoria;
 
     public String getCategoria() {

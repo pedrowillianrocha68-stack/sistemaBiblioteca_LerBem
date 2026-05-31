@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/livros")
@@ -30,7 +31,7 @@ public class LivroController {
     }
 
     @PostMapping
-    public ResponseEntity<Livro> salvar(@RequestBody Livro livro) {
+    public ResponseEntity<Livro> salvar(@ Valid @RequestBody Livro livro) {
         Livro livroSalvo = livroService.cadastrar(livro);
         return ResponseEntity.status(201).body(livroSalvo);
     }

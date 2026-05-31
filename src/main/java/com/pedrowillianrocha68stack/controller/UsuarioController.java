@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -25,7 +26,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuarios> salvar(@RequestBody Usuarios usuario) {
+    public ResponseEntity<Usuarios> salvar(@Valid @RequestBody Usuarios usuario) {
        Usuarios usuarioSalvo = usuarioService.cadastrar(usuario);
         return ResponseEntity.status(201).body(usuarioSalvo);    }
 
