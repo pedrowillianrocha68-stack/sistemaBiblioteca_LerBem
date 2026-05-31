@@ -25,12 +25,12 @@ public class EmprestimoController {
     }
 
     @PostMapping
-    public ResponseEntity<Emprestimo> registrarEmprestimo(@RequestBody Emprestimo emprestimo) {
-        return ResponseEntity.ok(emprestimoService.registrarEmprestimo(emprestimo));
+    public ResponseEntity<Emprestimo> registrarEmprestimo(@RequestParam Long idUsuario, @RequestParam Long idLivro) {
+        return ResponseEntity.status(201).body(emprestimoService.realizarEmprestimo(idUsuario, idLivro));
     }
 
     @PutMapping("/devolver/{id}")
     public ResponseEntity<Emprestimo> registrarDevolucao(@PathVariable Long id) {
-        return ResponseEntity.ok(emprestimoService.registrarDevolucao(id));
+        return ResponseEntity.ok(emprestimoService.devolverLivro(id));
     }
 }

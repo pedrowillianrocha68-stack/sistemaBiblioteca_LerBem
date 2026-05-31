@@ -21,7 +21,7 @@ public class LivroController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Livro> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(livroService.buscarPorId(id));
+        return ResponseEntity.ok(livroService.buscarPorId(id). get());
     }
 
     @GetMapping("/buscar")
@@ -31,7 +31,8 @@ public class LivroController {
 
     @PostMapping
     public ResponseEntity<Livro> salvar(@RequestBody Livro livro) {
-        return ResponseEntity.ok(livroService.salvar(livro));
+        Livro livroSalvo = livroService.cadastrar(livro);
+        return ResponseEntity.status(201).body(livroSalvo);
     }
 
     @PutMapping("/{id}")

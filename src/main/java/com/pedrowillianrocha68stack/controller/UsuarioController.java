@@ -21,13 +21,13 @@ public class UsuarioController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuarios> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+        return ResponseEntity.ok(usuarioService.buscarPorId(id). get());
     }
 
     @PostMapping
     public ResponseEntity<Usuarios> salvar(@RequestBody Usuarios usuario) {
-        return ResponseEntity.ok(usuarioService.salvar(usuario));
-    }
+       Usuarios usuarioSalvo = usuarioService.cadastrar(usuario);
+        return ResponseEntity.status(201).body(usuarioSalvo);    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Usuarios> atualizar(@PathVariable Long id, @RequestBody Usuarios usuario) {
