@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -25,16 +26,14 @@ public class SecurityConfig{
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
             .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/auth/**",
-                    "/swagger-ui/**",
-                     "/v3/api-docs/**",
-                     "/swagger-ui.html"
-                ).permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                .requestMatchers(HttpMethod.GET, "/livros", "/livros/**").permitAll()
+                .requestMatchers("/auth/**","/swagger-ui/**", "/h2-console/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
