@@ -5,6 +5,7 @@ import com.pedrowillianrocha68stack.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,7 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Cadastrar novo usuário
+    @Transactional
     public Usuarios cadastrar(Usuarios usuario) {
         if (usuariosRepository.existsByNome(usuario.getNome())) {
             throw new RuntimeException("Usuário já existe com esse nome");
@@ -31,27 +32,27 @@ public class UsuarioService {
         return usuariosRepository.save(usuario);
     }
 
-    // Listar todos os usuários
+    @Transactional(readOnly = true)
     public List<Usuarios> listarTodos() {
         return usuariosRepository.findAll();
     }
 
-    // Buscar por ID
+    @Transactional(readOnly = true)
     public Optional<Usuarios> buscarPorId(Long id) {
         return usuariosRepository.findById(id);
     }
 
-    // Buscar por nome
+    @Transactional(readOnly = true)
     public Optional<Usuarios> buscarPorNome(String nome) {
         return usuariosRepository.findByNome(nome);
     }
 
-    // Buscar por email
+    @Transactional(readOnly = true)
     public Optional<Usuarios> buscarPorEmail(String email) {
         return usuariosRepository.findByEmail(email);
     }
 
-    // Atualizar usuário
+    @Transactional
     public Usuarios atualizar(Long id, Usuarios dadosNovos) {
         Usuarios usuario = usuariosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -62,7 +63,6 @@ public class UsuarioService {
         usuario.setTelefone(dadosNovos.getTelefone());
         usuario.setEndereco(dadosNovos.getEndereco());
 
-        // Só atualiza senha se uma nova foi informada
         if (dadosNovos.getSenha() != null && !dadosNovos.getSenha().isEmpty()) {
             usuario.setSenha(passwordEncoder.encode(dadosNovos.getSenha()));
         }
@@ -70,7 +70,7 @@ public class UsuarioService {
         return usuariosRepository.save(usuario);
     }
 
-    // Deletar usuário
+    @Transactional
     public void deletar(Long id) {
         if (!usuariosRepository.existsById(id)) {
             throw new RuntimeException("Usuário não encontrado");

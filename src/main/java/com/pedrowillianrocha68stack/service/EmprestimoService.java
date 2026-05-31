@@ -6,6 +6,9 @@ import com.pedrowillianrocha68stack.model.Usuarios;
 import com.pedrowillianrocha68stack.repository.EmprestimoRepository;
 import com.pedrowillianrocha68stack.repository.LivroRepository;
 import com.pedrowillianrocha68stack.repository.UsuariosRepository;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ public class EmprestimoService {
     @Autowired
     private UsuariosRepository usuariosRepository;
 
+    @Transactional
     public Emprestimo realizarEmprestimo(Long idUsuario, Long idLivro) {
         Usuarios usuario = usuariosRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
@@ -48,7 +52,8 @@ public class EmprestimoService {
 
         return emprestimoRepository.save(emprestimo);
     }
-
+    
+    @Transactional
     public Emprestimo devolverLivro(Long idEmprestimo) {
         Emprestimo emprestimo = emprestimoRepository.findById(idEmprestimo)
                 .orElseThrow(() -> new RuntimeException("Empréstimo não encontrado"));
@@ -63,25 +68,30 @@ public class EmprestimoService {
 
         return emprestimoRepository.save(emprestimo);
     }
-
+    
+    @Transactional(readOnly = true)
     public List<Emprestimo> listarTodos() {
         return emprestimoRepository.findAll();
     }
-
+    
+    @Transactional(readOnly = true)
     public Optional<Emprestimo> buscarPorId(Long id) {
         return emprestimoRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Emprestimo> listarPorUsuario(Long idUsuario) {
         Usuarios usuario = usuariosRepository.findById(idUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         return emprestimoRepository.findByUsuario(usuario);
     }
-
+    
+    @Transactional(readOnly = true)
     public List<Emprestimo> listarAtivos() {
         return emprestimoRepository.findByDevolvido(false);
     }
 
+    @Transactional(readOnly = true)
     public List<Emprestimo> listarAtrasados() {
         return emprestimoRepository.findByDevolvidoFalseAndDataDevolucaoBefore(LocalDate.now());
     }
