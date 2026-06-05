@@ -1,4 +1,4 @@
-package com.pedrowillianrocha68stack.dto;
+package com.pedrowillianrocha68stack.DTO;
 
 import jakarta.validation.constraints.*;
 
