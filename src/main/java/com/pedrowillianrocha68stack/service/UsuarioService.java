@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -22,54 +23,54 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Usuarios cadastrar(Usuarios usuario) {
-        if (usuariosRepository.existsByNome(usuario.getNome())) {
+    public UsuarioResponseDTO cadastrar(UsuarioRequestDTO dto) {
+        if (usuariosRepository.existsByNome(dto.nome())) {
             throw new RuntimeException("Usuário já existe com esse nome");
         }
-        if (usuariosRepository.existsByEmail(usuario.getEmail())) {
+        if (usuariosRepository.existsByEmail(dto.email())) {
             throw new RuntimeException("Email já cadastrado");
         }
-        // Criptografa a senha antes de salvar
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        return usuariosRepository.save(usuario);
+        Usuarios usuario = toEntity(dto);
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        return toDTO(usuariosRepository.save(usuario));
     }
 
     @Transactional(readOnly = true)
-    public List<Usuarios> listarTodos() {
-        return usuariosRepository.findAll();
+    public List<UsuarioResponseDTO> listarTodos() {
+        return usuariosRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public Optional<Usuarios> buscarPorId(Long id) {
-        return usuariosRepository.findById(id);
+    public Optional<UsuarioResponseDTO> buscarPorId(Long id) {
+        return usuariosRepository.findById(id).map(this::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Usuarios> buscarPorNome(String nome) {
-        return usuariosRepository.findByNome(nome);
+    public Optional<UsuarioResponseDTO> buscarPorNome(String nome) {
+        return usuariosRepository.findByNome(nome).map(this::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Usuarios> buscarPorEmail(String email) {
-        return usuariosRepository.findByEmail(email);
+    public Optional<UsuarioResponseDTO> buscarPorEmail(String email) {
+        return usuariosRepository.findByEmail(email).map(this::toDTO);
     }
 
     @Transactional
-    public Usuarios atualizar(Long id, Usuarios dadosNovos) {
+    public UsuarioResponseDTO atualizar(Long id, UsuarioRequestDTO dto) {
         Usuarios usuario = usuariosRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
-        usuario.setNome(dadosNovos.getNome());
-        usuario.setEmail(dadosNovos.getEmail());
-        usuario.setCpf(dadosNovos.getCpf());
-        usuario.setTelefone(dadosNovos.getTelefone());
-        usuario.setEndereco(dadosNovos.getEndereco());
-
-        if (dadosNovos.getSenha() != null && !dadosNovos.getSenha().isEmpty()) {
-            usuario.setSenha(passwordEncoder.encode(dadosNovos.getSenha()));
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
+        usuario.setCpf(dto.cpf());
+        usuario.setTelefone(dto.telefone());
+        usuario.setEndereco(dto.endereco());
+        if (dto.senha() != null && !dto.senha().isEmpty()) {
+            usuario.setSenha(passwordEncoder.encode(dto.senha()));
         }
-
-        return usuariosRepository.save(usuario);
+        return toDTO(usuariosRepository.save(usuario));
     }
 
     @Transactional
@@ -78,28 +79,27 @@ public class UsuarioService {
             throw new RuntimeException("Usuário não encontrado");
         }
         usuariosRepository.deleteById(id);
-    };
+    }
 
-         private UsuarioResponseDTO toDTO(Usuarios usuario) {
-    return new UsuarioResponseDTO(
-        usuario.getIdUsuario(),
-        usuario.getNome(),
-        usuario.getEmail(),
-        usuario.getCpf(),
-        usuario.getTelefone(),
-        usuario.getEndereco()
-    );
-}
+    private UsuarioResponseDTO toDTO(Usuarios usuario) {
+        return new UsuarioResponseDTO(
+            usuario.getIdUsuario(),
+            usuario.getNome(),
+            usuario.getEmail(),
+            usuario.getCpf(),
+            usuario.getTelefone(),
+            usuario.getEndereco()
+        );
+    }
 
-private Usuarios toEntity(UsuarioRequestDTO dto) {
-    Usuarios usuario = new Usuarios();
-    usuario.setNome(dto.nome());
-    usuario.setEmail(dto.email());
-    usuario.setCpf(dto.cpf());
-    usuario.setTelefone(dto.telefone());
-    usuario.setEndereco(dto.endereco());
-    usuario.setSenha(dto.senha());
-    return usuario;
-}
-
+    private Usuarios toEntity(UsuarioRequestDTO dto) {
+        Usuarios usuario = new Usuarios();
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
+        usuario.setCpf(dto.cpf());
+        usuario.setTelefone(dto.telefone());
+        usuario.setEndereco(dto.endereco());
+        usuario.setSenha(dto.senha());
+        return usuario;
+    }
 }

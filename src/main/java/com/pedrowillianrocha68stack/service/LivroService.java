@@ -10,65 +10,79 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LivroService {
 
     @Autowired
     private LivroRepository livroRepository;
-    
+
     @Transactional
-    public Livro cadastrar(Livro livro) {
-        if (livroRepository.existsByIsbn(livro.getIsbn())) {
+    public LivroResponseDTO cadastrar(LivroRequestDTO dto) {
+        if (livroRepository.existsByIsbn(dto.isbn())) {
             throw new RuntimeException("Já existe um livro com esse ISBN");
         }
-        livro.setDisponivel(true); // novo livro começa disponível
-        return livroRepository.save(livro);
+        Livro livro = toEntity(dto);
+        livro.setDisponivel(true);
+        return toDTO(livroRepository.save(livro));
     }
 
     @Transactional(readOnly = true)
-    public List<Livro> listarTodos() {
-        return livroRepository.findAll();
-    }
-    
-    @Transactional(readOnly = true)
-    public Optional<Livro> buscarPorId(Long id) {
-        return livroRepository.findById(id);
-    }
-    
-    @Transactional(readOnly = true)
-    public List<Livro> buscarPorTitulo(String titulo) {
-        return livroRepository.findByTituloContainingIgnoreCase(titulo);
-    }
-    
-    @Transactional(readOnly = true)
-    public List<Livro> buscarPorAutor(String autor) {
-        return livroRepository.findByAutorContainingIgnoreCase(autor);
-    }
-    
-    @Transactional(readOnly = true)
-    public List<Livro> buscarPorCategoria(String categoria) {
-        return livroRepository.findByCategoria(categoria);
+    public List<LivroResponseDTO> listarTodos() {
+        return livroRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<Livro> listarDisponiveis() {
-        return livroRepository.findByDisponivelTrue();
+    public Optional<LivroResponseDTO> buscarPorId(Long id) {
+        return livroRepository.findById(id).map(this::toDTO);
     }
-    
+
+    @Transactional(readOnly = true)
+    public List<LivroResponseDTO> buscarPorTitulo(String titulo) {
+        return livroRepository.findByTituloContainingIgnoreCase(titulo)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LivroResponseDTO> buscarPorAutor(String autor) {
+        return livroRepository.findByAutorContainingIgnoreCase(autor)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LivroResponseDTO> buscarPorCategoria(String categoria) {
+        return livroRepository.findByCategoria(categoria)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LivroResponseDTO> listarDisponiveis() {
+        return livroRepository.findByDisponivelTrue()
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
-    public Livro atualizar(Long id, Livro dadosNovos) {
+    public LivroResponseDTO atualizar(Long id, LivroRequestDTO dto) {
         Livro livro = livroRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Livro não encontrado"));
-
-        livro.setTitulo(dadosNovos.getTitulo());
-        livro.setAutor(dadosNovos.getAutor());
-        livro.setIsbn(dadosNovos.getIsbn());
-        livro.setAnoPublicacao(dadosNovos.getAnoPublicacao());
-        livro.setCategoria(dadosNovos.getCategoria());
-        livro.setDisponivel(dadosNovos.isDisponivel());
-
-        return livroRepository.save(livro);
+        livro.setTitulo(dto.titulo());
+        livro.setAutor(dto.autor());
+        livro.setIsbn(dto.isbn());
+        livro.setAnoPublicacao(dto.anoPublicacao());
+        livro.setCategoria(dto.categoria());
+        return toDTO(livroRepository.save(livro));
     }
 
     @Transactional
@@ -79,25 +93,26 @@ public class LivroService {
         livroRepository.deleteById(id);
     }
 
-private LivroResponseDTO toDTO(Livro livro) {
-    return new LivroResponseDTO(
-        livro.getIdLivro(),
-        livro.getTitulo(),
-        livro.getAutor(),
-        livro.getIsbn(),
-        livro.getAnoPublicacao(),
-        livro.getCategoria(),
-        livro.isDisponivel()
-    );
+    private LivroResponseDTO toDTO(Livro livro) {
+        return new LivroResponseDTO(
+            livro.getIdLivro(),
+            livro.getTitulo(),
+            livro.getAutor(),
+            livro.getIsbn(),
+            livro.getAnoPublicacao(),
+            livro.getCategoria(),
+            livro.isDisponivel()
+        );
+    }
+
+    private Livro toEntity(LivroRequestDTO dto) {
+        Livro livro = new Livro();
+        livro.setTitulo(dto.titulo());
+        livro.setAutor(dto.autor());
+        livro.setIsbn(dto.isbn());
+        livro.setAnoPublicacao(dto.anoPublicacao());
+        livro.setCategoria(dto.categoria());
+        return livro;
+    }
 }
 
-private Livro toEntity(LivroRequestDTO dto) {
-    Livro livro = new Livro();
-    livro.setTitulo(dto.titulo());
-    livro.setAutor(dto.autor());
-    livro.setIsbn(dto.isbn());
-    livro.setAnoPublicacao(dto.anoPublicacao());
-    livro.setCategoria(dto.categoria());
-    return livro;
-}
-}
