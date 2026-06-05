@@ -1,5 +1,7 @@
 package com.pedrowillianrocha68stack.service;
 
+import com.pedrowillianrocha68stack.DTO.LivroRequestDTO;
+import com.pedrowillianrocha68stack.DTO.LivroResponseDTO;
 import com.pedrowillianrocha68stack.model.Livro;
 import com.pedrowillianrocha68stack.repository.LivroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,4 +78,26 @@ public class LivroService {
         }
         livroRepository.deleteById(id);
     }
+
+private LivroResponseDTO toDTO(Livro livro) {
+    return new LivroResponseDTO(
+        livro.getIdLivro(),
+        livro.getTitulo(),
+        livro.getAutor(),
+        livro.getIsbn(),
+        livro.getAnoPublicacao(),
+        livro.getCategoria(),
+        livro.isDisponivel()
+    );
+}
+
+private Livro toEntity(LivroRequestDTO dto) {
+    Livro livro = new Livro();
+    livro.setTitulo(dto.titulo());
+    livro.setAutor(dto.autor());
+    livro.setIsbn(dto.isbn());
+    livro.setAnoPublicacao(dto.anoPublicacao());
+    livro.setCategoria(dto.categoria());
+    return livro;
+}
 }
