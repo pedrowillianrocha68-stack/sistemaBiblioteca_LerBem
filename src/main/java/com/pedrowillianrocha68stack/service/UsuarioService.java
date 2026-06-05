@@ -76,5 +76,27 @@ public class UsuarioService {
             throw new RuntimeException("Usuário não encontrado");
         }
         usuariosRepository.deleteById(id);
+        
+        private UsuarioResponseDTO toDTO(Usuarios usuario) {
+    return new UsuarioResponseDTO(
+        usuario.getIdUsuario(),
+        usuario.getNome(),
+        usuario.getEmail(),
+        usuario.getCpf(),
+        usuario.getTelefone(),
+        usuario.getEndereco()
+    );
+}
+
+private Usuarios toEntity(UsuarioRequestDTO dto) {
+    Usuarios usuario = new Usuarios();
+    usuario.setNome(dto.nome());
+    usuario.setEmail(dto.email());
+    usuario.setCpf(dto.cpf());
+    usuario.setTelefone(dto.telefone());
+    usuario.setEndereco(dto.endereco());
+    usuario.setSenha(dto.senha());
+    return usuario;
+}
     }
 }
