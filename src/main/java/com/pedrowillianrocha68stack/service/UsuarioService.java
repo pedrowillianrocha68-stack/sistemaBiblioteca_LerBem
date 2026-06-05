@@ -1,5 +1,7 @@
 package com.pedrowillianrocha68stack.service;
 
+import com.pedrowillianrocha68stack.DTO.UsuarioRequestDTO;
+import com.pedrowillianrocha68stack.DTO.UsuarioResponseDTO;
 import com.pedrowillianrocha68stack.model.Usuarios;
 import com.pedrowillianrocha68stack.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,8 +78,9 @@ public class UsuarioService {
             throw new RuntimeException("Usuário não encontrado");
         }
         usuariosRepository.deleteById(id);
-        
-        private UsuarioResponseDTO toDTO(Usuarios usuario) {
+    };
+
+         private UsuarioResponseDTO toDTO(Usuarios usuario) {
     return new UsuarioResponseDTO(
         usuario.getIdUsuario(),
         usuario.getNome(),
@@ -98,5 +101,5 @@ private Usuarios toEntity(UsuarioRequestDTO dto) {
     usuario.setSenha(dto.senha());
     return usuario;
 }
-    }
+
 }
